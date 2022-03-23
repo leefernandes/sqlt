@@ -104,4 +104,12 @@ func main() {
 	}
 
 	spew.Dump("ListUsers:", users)
+
+	//
+	// UserJob
+	//
+	if err = dbapi.UserJob(ctx); err != nil {
+		panic(err)
+	}
+
 }

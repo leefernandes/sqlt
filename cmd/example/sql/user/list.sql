@@ -1,12 +1,14 @@
 {{ define "user/list" -}}
 
 -- SELECT
-{{ if .Select -}} select {{ .Select }} {{ else -}} select * {{ end }}
+{{ with .Select -}} select {{ . }} {{ else -}} select * {{ end }}
 -- FROM
 from "iam"."user"
 -- WHERE
-{{ if .Where -}} where {{ .Where }} {{ end }}
+{{ with .Where -}} where {{ . }} {{ end }}
 -- LIMIT
-{{ if and (gt .Limit 0) (lt .Limit 50) -}} limit {{ .Limit }} {{ else -}} limit 50 {{ end }}
+{{ with .Limit -}}
+{{ if and (gt . 0) (lt . 50) -}} limit {{ . }} {{ else -}} limit 50 {{ end }}
+{{- end }}
 
 {{- end }}

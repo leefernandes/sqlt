@@ -54,7 +54,7 @@ func (a api_context) Author() *uuid.UUID {
 }
 
 func (api *API) CreateUserSchema(ctx context.Context) error {
-	_, err := api.lib.Exec(ctx, "user/schema", nil)
+	_, err := api.lib.Exec(ctx, "user/schema")
 	if err != nil {
 		return fmt.Errorf("%v: %w", err, ErrCreateUserSchema)
 	}
@@ -65,7 +65,7 @@ func (api *API) CreateUserSchema(ctx context.Context) error {
 func (api *API) CreateUser(ctx api_context, user *domain.User) error {
 	user.CreateAuthor = *ctx.Author()
 
-	if err := api.lib.Create(ctx, "user/create", user); err != nil {
+	if err := api.lib.QueryRow(ctx, "user/create", user, sqlt.Input(user)); err != nil {
 		return fmt.Errorf("%v: %w", err, ErrCreateUser)
 	}
 
@@ -77,7 +77,7 @@ func (api *API) GetUser(ctx api_context, id uuid.UUID) (*domain.User, error) {
 		ID: id,
 	}
 
-	if err := api.lib.Get(ctx, "user/get", user, user); err != nil {
+	if err := api.lib.QueryRow(ctx, "user/get", user, sqlt.Input(user)); err != nil {
 		return nil, fmt.Errorf("%v: %w", err, ErrGetUser)
 	}
 
@@ -87,7 +87,7 @@ func (api *API) GetUser(ctx api_context, id uuid.UUID) (*domain.User, error) {
 func (api *API) ListUsers(ctx api_context, query domain.UserListQuery) ([]domain.User, error) {
 	var users []domain.User
 
-	err := api.lib.Select(ctx, "user/list", query, &users)
+	err := api.lib.Query(ctx, "user/list", &users, sqlt.Input(query))
 
 	if err != nil {
 		return nil, fmt.Errorf("%v: %w", err, ErrListUsers)
@@ -96,10 +96,21 @@ func (api *API) ListUsers(ctx api_context, query domain.UserListQuery) ([]domain
 	return users, nil
 }
 
+func (api *API) UserJob(ctx api_context) error {
+	err := api.lib.Iterate(ctx, "user/list", func(scan func(dest any) error) error {
+		user := &domain.User{}
+		scan(user)
+		fmt.Println("UserJob completed for User:", user.ID)
+		return nil
+	})
+
+	return err
+}
+
 func (api *API) UpdateUser(ctx api_context, user *domain.User) error {
 	user.UpdateAuthor = ctx.Author()
 
-	err := api.lib.Update(ctx, "user/update", user)
+	err := api.lib.QueryRow(ctx, "user/update", user, sqlt.Input(user))
 	if err != nil {
 		return fmt.Errorf("%v: %w", err, ErrUpdateUser)
 	}
