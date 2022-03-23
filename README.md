@@ -58,7 +58,7 @@ $3 = 'Rio de Janeiro'
 $4 = 98
 ```
 
-... and are easily scanned into in-memory structures, or iterated for large per row jobs.
+... and are easily scanned into in-memory structures, or [iterated](https://github.com/leefernandes/sqlt/blob/main/cmd/example/api/api.go#L111) for large per row jobs.
 
 ```go
 //go:embed sql/**/*
