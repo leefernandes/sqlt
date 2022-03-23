@@ -58,7 +58,7 @@ $3 = 'Rio de Janeiro'
 $4 = 98
 ```
 
-... and are easily scanned into in-memory structures.
+... and are easily scanned into in-memory structures, or iterated for large per row jobs.
 
 ```go
 //go:embed sql/**/*
