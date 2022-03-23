@@ -1,4 +1,4 @@
-package domain
+package entity
 
 import (
 	"time"
@@ -22,7 +22,7 @@ type User struct {
 	DeleteTime   *time.Time `db:"delete_time"`
 }
 
-type UserListQuery struct {
+type UserListInput struct {
 	Age    int
 	Cities []string
 	Limit  int

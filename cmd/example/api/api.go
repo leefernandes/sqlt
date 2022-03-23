@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/leefernandes/sqlt"
-	"github.com/leefernandes/sqlt/cmd/example/domain"
+	"github.com/leefernandes/sqlt/cmd/example/entity"
 )
 
 var (
@@ -62,7 +62,7 @@ func (api *API) CreateUserSchema(ctx context.Context) error {
 	return nil
 }
 
-func (api *API) CreateUser(ctx api_context, user *domain.User) error {
+func (api *API) CreateUser(ctx api_context, user *entity.User) error {
 	user.CreateAuthor = *ctx.Author()
 
 	if err := api.lib.QueryRow(ctx, "user/create", user, sqlt.Input(user)); err != nil {
@@ -72,8 +72,8 @@ func (api *API) CreateUser(ctx api_context, user *domain.User) error {
 	return nil
 }
 
-func (api *API) GetUser(ctx api_context, id uuid.UUID) (*domain.User, error) {
-	user := &domain.User{
+func (api *API) GetUser(ctx api_context, id uuid.UUID) (*entity.User, error) {
+	user := &entity.User{
 		ID: id,
 	}
 
@@ -84,8 +84,8 @@ func (api *API) GetUser(ctx api_context, id uuid.UUID) (*domain.User, error) {
 	return user, nil
 }
 
-func (api *API) ListUsers(ctx api_context, query domain.UserListQuery) ([]domain.User, error) {
-	var users []domain.User
+func (api *API) ListUsers(ctx api_context, query entity.UserListInput) ([]entity.User, error) {
+	var users []entity.User
 
 	err := api.lib.Query(ctx, "user/list", &users, sqlt.Input(query))
 
@@ -96,18 +96,7 @@ func (api *API) ListUsers(ctx api_context, query domain.UserListQuery) ([]domain
 	return users, nil
 }
 
-func (api *API) UserJob(ctx api_context) error {
-	err := api.lib.Iterate(ctx, "user/list", func(scan func(dest any) error) error {
-		user := &domain.User{}
-		scan(user)
-		fmt.Println("UserJob completed for User:", user.ID)
-		return nil
-	})
-
-	return err
-}
-
-func (api *API) UpdateUser(ctx api_context, user *domain.User) error {
+func (api *API) UpdateUser(ctx api_context, user *entity.User) error {
 	user.UpdateAuthor = ctx.Author()
 
 	err := api.lib.QueryRow(ctx, "user/update", user, sqlt.Input(user))
@@ -116,4 +105,15 @@ func (api *API) UpdateUser(ctx api_context, user *domain.User) error {
 	}
 
 	return nil
+}
+
+func (api *API) UserJob(ctx api_context) error {
+	err := api.lib.Iterate(ctx, "user/list", func(scan func(dest any) error) error {
+		user := &entity.User{}
+		scan(user)
+		fmt.Println("UserJob completed for User:", user.ID)
+		return nil
+	})
+
+	return err
 }

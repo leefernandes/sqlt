@@ -12,15 +12,13 @@ import (
 
 	"github.com/leefernandes/sqlt"
 	"github.com/leefernandes/sqlt/cmd/example/api"
-	"github.com/leefernandes/sqlt/cmd/example/domain"
+	"github.com/leefernandes/sqlt/cmd/example/entity"
 )
 
 //go:embed sql/**/*
 var templates embed.FS
 
 func main() {
-	// this Pings the database trying to connect
-	// use sqlx.Open() for sql.Open() semantics
 	db := sqlx.MustConnect("postgres", "dbname=postgres sslmode=disable")
 
 	lib := sqlt.Must(db, templates, []string{"sql/**/*"}, sqlt.Debug())
@@ -39,7 +37,7 @@ func main() {
 	//
 	// CreateUser
 	//
-	user := &domain.User{
+	user := &entity.User{
 		City:  "São Paulo",
 		Email: fmt.Sprintf("notan@email+%d.lol", time.Now().Unix()),
 	}
@@ -54,7 +52,7 @@ func main() {
 	//
 	// CreateUser
 	//
-	user2 := &domain.User{
+	user2 := &entity.User{
 		City:  "Tampa",
 		Email: fmt.Sprintf("stillnotan@email+%d.lol", time.Now().Unix()),
 	}
@@ -91,14 +89,14 @@ func main() {
 	//
 	// ListUsers
 	//
-	listUsersQuery := domain.UserListQuery{
+	userListInput := entity.UserListInput{
 		Where:  "city in (:cities) and age > :age",
 		Limit:  10,
 		Age:    98,
 		Cities: []string{"Tampa", "São Paulo", "Rio de Janeiro"},
 	}
 
-	users, err := dbapi.ListUsers(ctx, listUsersQuery)
+	users, err := dbapi.ListUsers(ctx, userListInput)
 	if err != nil {
 		panic(err)
 	}
