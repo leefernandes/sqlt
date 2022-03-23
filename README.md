@@ -1,6 +1,6 @@
 # SQLT - sql/template
 
-A lean experimental library for rendering SQL from embedded text/template files that supports ? or $1...$N parameterized placeholders, and scans results into structs.
+A lean experimental library for rendering SQL from embedded text/template files that supports ? or $1...$N parameterized placeholders, and scans results into structs or slices of structs.
 
 See [cmd/example/main.go](cmd/example/main.go) for a functional CRUD+ api example.
 
