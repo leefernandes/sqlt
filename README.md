@@ -81,7 +81,9 @@ users := []User{}
 err := api.lib.Query(ctx, templateName, &users, sqlt.Input(userListQuery))
 ```
 
-SQLT is comprised of 5 lightweight methods, utilizing embed.FS to load templates, standard go text/template for parsing templates, and [sqlx](https://github.com/jmoiron/sqlx) to interfacing with databases.
+SQLT is comprised of 5 lightweight methods named similarly to Go's standard templating & sql library names, `Exec` `ExecuteTemplate` `Iterate` `Query` `QueryRow`
+
+We use embed.FS to load templates, standard go text/template for parsing templates, and [sqlx](https://github.com/jmoiron/sqlx) to interface with databases.
 
 ```go
 type SQLT interface {
