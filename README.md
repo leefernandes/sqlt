@@ -6,7 +6,7 @@ See [cmd/example/main.go](cmd/example/main.go) for a functional CRUD+ api exampl
 
 ## EXAMPLE
 
-Given a sql/template...
+Given a sql/template ...
 
 ```sql
 {{ define "user/list" -}}
@@ -25,7 +25,7 @@ from "iam"."user"
 {{- end }}
 ```
 
-...and some input data...
+... and some input data ...
 
 ```go
 userListInput := UserListInput{
@@ -36,7 +36,7 @@ userListInput := UserListInput{
 }
 ```
 
-...we should see generate the following SQL...
+... we should generate the following SQL ...
 
 ```sql
 -- SELECT
@@ -49,7 +49,7 @@ where city in ($1, $2, $3) and age > $4
 limit 10
 ```
 
-...where the encoded placeholder parameters equal the following...
+... where the encoded placeholder parameters equal the following ...
 
 ```sh
 $1 = 'Tampa'
@@ -58,7 +58,7 @@ $3 = 'Rio de Janeiro'
 $4 = 98
 ```
 
-...and are easily scanned into in-memory structures.
+... and are easily scanned into in-memory structures.
 
 ```go
 //go:embed sql/**/*
